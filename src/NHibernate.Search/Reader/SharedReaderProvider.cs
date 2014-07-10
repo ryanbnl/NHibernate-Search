@@ -62,7 +62,8 @@ namespace NHibernate.Search.Reader
 		     */
             try
             {
-                reader = IndexReader.Open(directoryProvider.Directory);
+                // TODO:RB: check if reader should be writable
+                reader = IndexReader.Open(directoryProvider.Directory, false);
             }
             catch (IOException e)
             {

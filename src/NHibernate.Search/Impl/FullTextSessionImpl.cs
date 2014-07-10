@@ -509,7 +509,7 @@ namespace NHibernate.Search.Impl
         {
             using (new SessionIdLoggingContext(sessionImplementor.SessionId))
             {
-                QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
+                QueryParser queryParser = new QueryParser(Environment.LuceneVersion, defaultField, new StandardAnalyzer(Environment.LuceneVersion));
                 Lucene.Net.Search.Query query = queryParser.Parse(queryString);
                 return CreateFullTextQuery(query, typeof (TEntity));
             }
@@ -519,7 +519,7 @@ namespace NHibernate.Search.Impl
         {
             using (new SessionIdLoggingContext(sessionImplementor.SessionId))
             {
-                QueryParser queryParser = new QueryParser(string.Empty, new StandardAnalyzer());
+                QueryParser queryParser = new QueryParser(Environment.LuceneVersion, string.Empty, new StandardAnalyzer(Environment.LuceneVersion));
                 Lucene.Net.Search.Query query = queryParser.Parse(queryString);
                 return CreateFullTextQuery(query, typeof (TEntity));
             }

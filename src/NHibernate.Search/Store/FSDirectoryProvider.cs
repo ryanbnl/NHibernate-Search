@@ -23,29 +23,9 @@ namespace NHibernate.Search.Store
 
         public void Initialize(String directoryProviderName, IDictionary<string, string> properties, ISearchFactoryImplementor searchFactory)
         {
-            DirectoryInfo indexDir = DirectoryProviderHelper.DetermineIndexDir(directoryProviderName, (IDictionary) properties);
-            try
-            {
-                bool create = !IndexReader.IndexExists(indexDir.FullName);
-                indexName = indexDir.FullName;
-                directory = FSDirectory.GetDirectory(indexName, create);
+            DirectoryInfo indexDir = DirectoryProviderHelper.DetermineIndexDir(directoryProviderName, (IDictionary)properties);
 
-                if (create)
-                {
-                    IndexWriter iw = new IndexWriter(directory,
-                                                     new StandardAnalyzer(),
-                                                     create,
-                                                     new KeepOnlyLastCommitDeletionPolicy(),
-                                                     IndexWriter.MaxFieldLength.UNLIMITED);
-                    iw.Close();
-                }
-
-                //searchFactory.RegisterDirectoryProviderForLocks(this);
-            }
-            catch (IOException e)
-            {
-                throw new HibernateException("Unable to initialize index: " + directoryProviderName, e);
-            }
+            FSDirectoryHelpers.InitializeIndex(indexDir, directoryProviderName);
         }
 
         public void Start()
@@ -69,7 +49,7 @@ namespace NHibernate.Search.Store
             // but from a practical POV this is fine since we only call this method
             // after initialize call
             const int hash = 11;
-            return 37*hash + indexName.GetHashCode();
+            return 37 * hash + indexName.GetHashCode();
         }
     }
 }

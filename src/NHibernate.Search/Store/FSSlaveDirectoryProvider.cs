@@ -126,30 +126,13 @@ namespace NHibernate.Search.Store
             period *= 1000;  // per second
             try
             {
-                bool create;
-
-                DirectoryInfo subDir = new DirectoryInfo(Path.Combine(indexName, "1"));
-                create = !IndexReader.IndexExists(subDir.FullName); 
-                directory1 = FSDirectory.GetDirectory(subDir.FullName, create);
-                if (create)
-                {
-                    log.DebugFormat("Initialize index: '{0}'", subDir.FullName);
-                    IndexWriter iw1 = new IndexWriter(directory1, new StandardAnalyzer(), create);
-                    iw1.Close();
-                }
-
-                subDir = new DirectoryInfo(Path.Combine(indexName, "2"));
-                create = !IndexReader.IndexExists(subDir.FullName); 
-                directory2 = FSDirectory.GetDirectory(subDir.FullName, create);
-                if (create)
-                {
-                    log.DebugFormat("Initialize index: '{0}'", subDir.FullName);
-                    IndexWriter iw2 = new IndexWriter(directory2, new StandardAnalyzer(), create);
-                    iw2.Close();
-                }
+                // Initialize
+                FSDirectoryHelpers.InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "1")));
+                FSDirectoryHelpers.InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "2")));
 
                 string current1Marker = Path.Combine(indexName, "current1");
                 string current2Marker = Path.Combine(indexName, "current2");
+
                 if (File.Exists(current1Marker))
                 {
                     current = 1;

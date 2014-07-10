@@ -79,30 +79,8 @@ namespace NHibernate.Search.Store
             log.Debug("Source directory: " + source);
             indexDir = DirectoryProviderHelper.DetermineIndexDir(directoryProviderName, (IDictionary) properties);
             log.Debug("Index directory: " + indexDir);
-            try
-            {
-                // NB Do we need to do this since we are passing the create flag to Lucene?
-                bool create = !IndexReader.IndexExists(indexDir.FullName);
-                if (create)
-                {
-                    log.DebugFormat("Index directory not found, creating '{0}'", indexDir.FullName);
-                    indexDir.Create();
-                }
 
-                indexName = indexDir.FullName;
-                directory = FSDirectory.GetDirectory(indexName, create);
-
-                if (create)
-                {
-                    indexName = indexDir.FullName;
-                    IndexWriter iw = new IndexWriter(directory, new StandardAnalyzer(), create);
-                    iw.Close();
-                }
-            }
-            catch (IOException e)
-            {
-                throw new HibernateException("Unable to initialize index: " + directoryProviderName, e);
-            }
+            FSDirectoryHelpers.InitializeIndex(indexDir, directoryProviderName);
 
             this.searchFactory = searchFactory;
         }

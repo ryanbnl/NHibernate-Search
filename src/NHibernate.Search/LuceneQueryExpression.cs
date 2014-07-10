@@ -31,11 +31,12 @@ namespace NHibernate.Search
             if (searcher == null)
                 throw new SearchException("Could not find a searcher for class: " + type.FullName);
             Lucene.Net.Search.Query query = FullTextSearchHelper.FilterQueryByClasses(types, luceneQuery);
-            Hits hits = searcher.Search(query);
+            var topDocs = searcher.Search(query,Environment.MaxResults);
             List<object> ids = new List<object>();
-            for (int i = 0; i < hits.Length(); i++)
+            for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
             {
-                object id = DocumentBuilder.GetDocumentId(searchFactory, type, hits.Doc(i));
+                var doc = searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                object id = DocumentBuilder.GetDocumentId(searchFactory, type, doc);
                 ids.Add(id);
             }
             base.Values = ids.ToArray();

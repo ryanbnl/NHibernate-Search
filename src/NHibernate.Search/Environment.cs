@@ -62,5 +62,23 @@ namespace NHibernate.Search
         public const string SourceBase = "sourceBase";
         public const string Source = "source";
         public const string IndexBase = "indexBase";
+        
+        /// <summary>
+        /// RB: NEW
+        /// Maximum number of documents returned by search.
+        /// </summary>
+        public const int MaxResults = 128;
+
+        /// <summary>
+        /// RB: NEW
+        /// Maximum size of a field.
+        /// </summary>
+        public const int MaxFieldSize = 4096;
+        
+        /// <summary>
+        /// RB: NEW
+        /// Version of Lucene used for the Analyzer.
+        /// </summary>
+        public static Lucene.Net.Util.Version LuceneVersion { get { return Lucene.Net.Util.Version.LUCENE_30; } }
     }
 }
