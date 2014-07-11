@@ -10,6 +10,7 @@ using NHibernate.Cfg;
 using NHibernate.Search.Store;
 
 using NUnit.Framework;
+using Lucene.Net.Store;
 
 namespace NHibernate.Search.Tests.Shards
 {
@@ -71,7 +72,7 @@ namespace NHibernate.Search.Tests.Shards
 
             tx = s.BeginTransaction();
             IFullTextSession fts = Search.CreateFullTextSession(s);
-            QueryParser parser = new QueryParser("id", new StopAnalyzer());
+            QueryParser parser = new QueryParser(Environment.LuceneVersion, "id", new StopAnalyzer(Environment.LuceneVersion));
 
             IList results = fts.CreateFullTextQuery(parser.Parse("name:mouse OR name:bear")).List();
             Assert.AreEqual(2, results.Count, "Either double insert, single update, or query fails with shards");
@@ -104,26 +105,16 @@ namespace NHibernate.Search.Tests.Shards
 
             s.Clear();
 
-            IndexReader reader = IndexReader.Open(new FileInfo(BaseIndexDir.FullName + "\\Animal00"));
-            try
+            using(var reader = IndexReader.Open(FSDirectory.Open(Path.Combine(BaseIndexDir.FullName, "\\Animal00")), false))
             {
                 int num = reader.NumDocs();
                 Assert.AreEqual(1, num);
-            }
-            finally
-            {
-                reader.Close();
             }
 
-            reader = IndexReader.Open(new FileInfo(BaseIndexDir.FullName + "\\Animal.1"));
-            try
+            using (var reader = IndexReader.Open(FSDirectory.Open(Path.Combine(BaseIndexDir.FullName, "\\Animal.1")), false))
             {
                 int num = reader.NumDocs();
                 Assert.AreEqual(1, num);
-            }
-            finally
-            {
-                reader.Close();
             }
 
             tx = s.BeginTransaction();
@@ -133,24 +124,19 @@ namespace NHibernate.Search.Tests.Shards
 
             s.Clear();
 
-            reader = IndexReader.Open(new FileInfo(BaseIndexDir.FullName + "\\Animal.1"));
-            try
+            using(var reader = IndexReader.Open(FSDirectory.Open(Path.Combine(BaseIndexDir.FullName, "\\Animal.1")), false))
             {
                 int num = reader.NumDocs();
                 Assert.AreEqual(1, num);
                 TermDocs docs = reader.TermDocs(new Term("name", "mouse"));
                 Assert.IsTrue(docs.Next());
-                Document doc = reader.Document(docs.Doc());
+                Document doc = reader.Document(docs.Doc);
                 Assert.IsFalse(docs.Next());
             }
-            finally
-            {
-                reader.Close();
-            }
-
+            
             tx = s.BeginTransaction();
             IFullTextSession fts = Search.CreateFullTextSession(s);
-            QueryParser parser = new QueryParser("id", new StopAnalyzer());
+            QueryParser parser = new QueryParser(Environment.LuceneVersion, "id", new StopAnalyzer(Environment.LuceneVersion));
 
             IList results = fts.CreateFullTextQuery(parser.Parse("name:mouse OR name:bear")).List();
             Assert.AreEqual(2, results.Count, "Either double insert, single update, or query fails with shards");
