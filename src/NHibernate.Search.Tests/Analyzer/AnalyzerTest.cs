@@ -16,49 +16,49 @@ namespace NHibernate.Search.Tests.Analyzer
         [Test]
         public void TestScopedAnalyzers()
         {
-            var entity = new MyEntity
-            {
-                Entity = "Entity",
-                Field = "Field",
-                Property = "Property",
-                Component = new MyComponent
-                {
-                    ComponentProperty = "ComponentProperty"
-                }
-            };
-
             using (var session = OpenSession())
+            using (var transaction = session.BeginTransaction())
             using (var fullTextSession = Search.CreateFullTextSession(session))
             {
-                using (var transaction = fullTextSession.BeginTransaction())
+                using (var ftsTransaction = fullTextSession.BeginTransaction())
                 {
-                    fullTextSession.Save(entity);
+                    fullTextSession.Save(new MyEntity
+                    {
+                        Entity = "Entity",
+                        Field = "Field",
+                        Property = "Property",
+                        Component = new MyComponent
+                        {
+                            ComponentProperty = "ComponentProperty"
+                        }
+                    });
                     fullTextSession.Flush();
-                    transaction.Commit();
+                    ftsTransaction.Commit();
                 }
 
                 var parser = new QueryParser(Environment.LuceneVersion, "id", new StandardAnalyzer(Environment.LuceneVersion));
 
-                using (var transaction = fullTextSession.BeginTransaction())
+                using (var ftsTransaction = fullTextSession.BeginTransaction())
                 {
-                    var query1 = fullTextSession.CreateFullTextQuery(parser.Parse("entity:alarm"), typeof(MyEntity));
+                    var query1 = fullTextSession.CreateFullTextQuery(parser.Parse("entity:entity"), typeof(MyEntity));
                     Assert.AreEqual(1, query1.ResultSize, "Entity query");
 
-                    var query2 = fullTextSession.CreateFullTextQuery(parser.Parse("property:cat"), typeof(MyEntity));
+                    var query2 = fullTextSession.CreateFullTextQuery(parser.Parse("property:property"), typeof(MyEntity));
                     Assert.AreEqual(1, query2.ResultSize, "Property query");
 
-                    var query3 = fullTextSession.CreateFullTextQuery(parser.Parse("field:energy"), typeof(MyEntity));
+                    var query3 = fullTextSession.CreateFullTextQuery(parser.Parse("field:field"), typeof(MyEntity));
                     Assert.AreEqual(1, query3.ResultSize, "Field query");
 
-                    var query4 = fullTextSession.CreateFullTextQuery(parser.Parse("component.componentProperty:noise"));
+                    var query4 = fullTextSession.CreateFullTextQuery(parser.Parse("component.componentProperty:ComponentProperty"));
                     Assert.AreEqual(1, query4.ResultSize, "Component query");
 
                     fullTextSession.Delete(query4.UniqueResult());
 
-                    transaction.Commit();
+                    ftsTransaction.Commit();
                 }
 
                 fullTextSession.Close();
+                transaction.Commit();
                 session.Close();
             }
         }
