@@ -139,7 +139,9 @@ namespace NHibernate.Test
         public void SetUp()
         {
             if (RunFixtureSetUpAndTearDownForEachTest)
+            {
                 TestFixtureSetUpInternal();
+            }
 
             OnSetUp();
         }

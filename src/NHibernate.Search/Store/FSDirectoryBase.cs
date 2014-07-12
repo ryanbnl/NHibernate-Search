@@ -38,6 +38,8 @@ namespace NHibernate.Search.Store
                 {
                     // Do nothing, index writer's constructor has initialized the index
                     log.Info("Index writer called to create directory" + path.FullName);
+
+                    indexWriter.Close();
                 }
 
                 return directory;
