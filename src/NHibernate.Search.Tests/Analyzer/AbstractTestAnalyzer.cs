@@ -24,20 +24,19 @@ namespace NHibernate.Search.Tests.Analyzer
                 this.tokens = tokens;
             }
 
-            // TODO:RB investigage
-            //public override Token Next()
-            //{
-            //    return position >= tokens.Length ? null : new Token(tokens[position++], 0, 0);
-            //}
-
             protected override void Dispose(bool disposing)
             {
-                throw new System.NotImplementedException();
             }
 
             public override bool IncrementToken()
             {
-                throw new System.NotImplementedException();
+                if (position >= tokens.Length)
+                {
+                    return false;
+                }
+
+                position++;
+                return true;
             }
         }
 

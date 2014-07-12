@@ -21,7 +21,7 @@ namespace NHibernate.Search.Store
     /// 
     /// A copy is triggered every refresh seconds
     /// </summary>
-    public class FSSlaveDirectoryProvider : IDirectoryProvider
+    public class FSSlaveDirectoryProvider : FSDirectoryBase
     {
 		private static readonly IInternalLogger log = LoggerProvider.LoggerFor(typeof(FSSlaveDirectoryProvider));
         private FSDirectory directory1;
@@ -57,7 +57,7 @@ namespace NHibernate.Search.Store
 
         #region Property methods
 
-        public Directory Directory
+        public override Directory Directory
         {
             get
             {
@@ -77,7 +77,7 @@ namespace NHibernate.Search.Store
 
         #region Public methods
 
-        public void Initialize(String directoryProviderName, IDictionary<string, string> properties, ISearchFactoryImplementor searchFactory)
+        public override void Initialize(String directoryProviderName, IDictionary<string, string> properties, ISearchFactoryImplementor searchFactory)
         {
             this.properties = properties;
             this.directoryProviderName = directoryProviderName;
@@ -113,7 +113,7 @@ namespace NHibernate.Search.Store
             }
         }
 
-        public void Start()
+        public override void Start()
         {
             string refreshPeriod = properties.ContainsKey("refresh") ? properties["refresh"] : "3600";
             long period;
@@ -127,8 +127,8 @@ namespace NHibernate.Search.Store
             try
             {
                 // Initialize
-                FSDirectoryHelpers.InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "1")));
-                FSDirectoryHelpers.InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "2")));
+                this.directory1 = InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "1")));
+                this.directory2 = InitializeIndex(new DirectoryInfo(Path.Combine(indexName, "2")));
 
                 string current1Marker = Path.Combine(indexName, "current1");
                 string current2Marker = Path.Combine(indexName, "current2");

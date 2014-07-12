@@ -10,25 +10,29 @@ using Directory=Lucene.Net.Store.Directory;
 
 namespace NHibernate.Search.Store
 {
-    public class FSDirectoryProvider : IDirectoryProvider
+    public class FSDirectoryProvider : FSDirectoryBase
     {
 		private static IInternalLogger log = LoggerProvider.LoggerFor(typeof(FSDirectoryProvider));
         private FSDirectory directory;
         private String indexName;
 
-        public Directory Directory
+        public override Directory Directory
         {
             get { return directory; }
         }
 
-        public void Initialize(String directoryProviderName, IDictionary<string, string> properties, ISearchFactoryImplementor searchFactory)
+        public override void Initialize(String directoryProviderName, IDictionary<string, string> properties, ISearchFactoryImplementor searchFactory)
         {
             DirectoryInfo indexDir = DirectoryProviderHelper.DetermineIndexDir(directoryProviderName, (IDictionary)properties);
 
-            FSDirectoryHelpers.InitializeIndex(indexDir, directoryProviderName);
+            indexName = indexDir.FullName;
+
+            var directory = InitializeIndex(indexDir, directoryProviderName);
+
+            this.directory = directory;
         }
 
-        public void Start()
+        public override void Start()
         {
             // All the work is done in initialize
         }

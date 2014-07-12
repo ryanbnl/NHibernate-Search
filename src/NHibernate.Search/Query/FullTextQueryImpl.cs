@@ -402,9 +402,9 @@ namespace NHibernate.Search.Query
             using (new SessionIdLoggingContext(Session.SessionId))
             {
                 LogQuery();
-                Lucene.Net.Search.Query query = FullTextSearchHelper.FilterQueryByClasses(classesAndSubclasses, luceneQuery);
+                var query = FullTextSearchHelper.FilterQueryByClasses(classesAndSubclasses, luceneQuery);
                 BuildFilters();
-                TopDocs topDocs = searcher.Search(query, filter, Environment.MaxResults, this.sort);
+                TopDocs topDocs = searcher.Search(query, filter, Environment.MaxResults, this.sort ?? Sort.RELEVANCE);
                 log.DebugFormat("Lucene query returned {0} results", topDocs.TotalHits);
                 this.SetResultSize(topDocs);
 

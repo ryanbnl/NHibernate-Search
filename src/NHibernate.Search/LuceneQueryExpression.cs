@@ -31,7 +31,7 @@ namespace NHibernate.Search
             if (searcher == null)
                 throw new SearchException("Could not find a searcher for class: " + type.FullName);
             Lucene.Net.Search.Query query = FullTextSearchHelper.FilterQueryByClasses(types, luceneQuery);
-            var topDocs = searcher.Search(query,Environment.MaxResults);
+            var topDocs = searcher.Search(query, Environment.MaxResults);
             List<object> ids = new List<object>();
             for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
             {

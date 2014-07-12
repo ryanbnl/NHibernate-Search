@@ -66,15 +66,10 @@ namespace NHibernate.Search
         /// <summary>
         /// RB: NEW
         /// Maximum number of documents returned by search.
+        /// Lower settings may cause some tests to fail.
         /// </summary>
-        public const int MaxResults = 128;
+        public const int MaxResults = 4096;
 
-        /// <summary>
-        /// RB: NEW
-        /// Maximum size of a field.
-        /// </summary>
-        public const int MaxFieldSize = 4096;
-        
         /// <summary>
         /// RB: NEW
         /// Version of Lucene used for the Analyzer.

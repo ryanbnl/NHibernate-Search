@@ -120,6 +120,7 @@ namespace NHibernate.Search.Impl
 
             String analyzerClassName = cfg.GetProperty(Environment.AnalyzerClass);
             if (analyzerClassName != null)
+            {
                 try
                 {
                     analyzerClass = ReflectHelper.ClassForName(analyzerClassName);
@@ -130,25 +131,42 @@ namespace NHibernate.Search.Impl
                         string.Format("Lucene analyzer class '{0}' defined in property '{1}' could not be found.",
                                       analyzerClassName, Environment.AnalyzerClass), e);
                 }
+            }
             else
+            {
                 analyzerClass = typeof(StandardAnalyzer);
+            }
+
             // Initialize analyzer
             Analyzer defaultAnalyzer;
+
             try
             {
-                defaultAnalyzer = (Analyzer) Activator.CreateInstance(analyzerClass);
+                if (ReflectionHelpers.HasParameterlessConstructor(analyzerClass))
+                {
+                    defaultAnalyzer = ReflectionHelpers.GetInstance<Analyzer>(analyzerClass);
+                }
+                else if (ReflectionHelpers.HasConstructorWithParameterOf(analyzerClass, typeof(Lucene.Net.Util.Version)))
+                {
+                    defaultAnalyzer = ReflectionHelpers.GetInstance<Analyzer, Lucene.Net.Util.Version>(analyzerClass, Environment.LuceneVersion);
+                }
+                else
+                {
+                    throw new Exception("No known constructor available on analyzer class.  Maybe Lucene has had an upgrade?");
+                }
             }
-            catch (InvalidCastException)
+            catch (InvalidCastException e)
             {
                 throw new SearchException(
                     string.Format("Lucene analyzer does not implement {0}: {1}", typeof(Analyzer).FullName,
-                                  analyzerClassName)
+                                  analyzerClassName), e
                     );
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new SearchException("Failed to instantiate lucene analyzer with type " + analyzerClassName);
+                throw new SearchException("Failed to instantiate lucene analyzer with type " + analyzerClassName, e);
             }
+
             return defaultAnalyzer;
         }
 

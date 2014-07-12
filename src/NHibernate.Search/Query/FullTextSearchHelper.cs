@@ -91,7 +91,11 @@ namespace NHibernate.Search.Query
             }
 
             IDirectoryProvider[] directoryProviders = new List<IDirectoryProvider>(directories).ToArray();
-            return new IndexSearcher(searchFactory.ReaderProvider.OpenReader(directoryProviders));
+
+            var searcher = new IndexSearcher(searchFactory.ReaderProvider.OpenReader(directoryProviders));
+            searcher.SetDefaultFieldSortScoring(true, true);
+
+            return searcher;
         }
     }
 }
