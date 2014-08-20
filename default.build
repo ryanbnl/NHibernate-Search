@@ -31,9 +31,9 @@
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
-				<include name="${folders.packages}/NHibernate.3.3.1.4000/lib/Net35/NHibernate.dll"/>
+				<include name="${folders.packages}/NHibernate.3.3.3.4001/lib/Net35/NHibernate.dll"/>
 				<include name="${folders.packages}/Iesi.Collections.3.3.1.4000/lib/Net35/Iesi.Collections.dll"/>
-				<include name="${folders.packages}/Lucene.Net.2.9.4.1/lib/net40/Lucene.Net.dll"/>
+				<include name="${folders.packages}/Lucene.Net.3.0.3/lib/net40/Lucene.Net.dll"/>
 				<include name="${folders.packages}/SharpZipLib.0.86.0/lib/20/ICSharpCode.SharpZipLib.dll"/>
 				
 			</references>
@@ -56,9 +56,9 @@
 				<include name="**/*.cs"/>
 			</sources>
 			<references>
-				<include name="${folders.packages}/NHibernate.3.3.1.4000/lib/Net35/NHibernate.dll"/>
+				<include name="${folders.packages}/NHibernate.3.3.3.4001/lib/Net35/NHibernate.dll"/>
 				<include name="${folders.packages}/Iesi.Collections.3.3.1.4000/lib/Net35/Iesi.Collections.dll"/>
-				<include name="${folders.packages}/Lucene.Net.2.9.4.1/lib/net40/Lucene.Net.dll"/>
+				<include name="${folders.packages}/Lucene.Net.3.0.3/lib/net40/Lucene.Net.dll"/>
 				<include name="${folders.packages}/SharpZipLib.0.86.0/lib/20/ICSharpCode.SharpZipLib.dll"/>
 				<include name="${folders.packages}/Log4net.2.0.0/lib/net40-full/log4net.dll"/>
 				<include name="${folders.packages}/NUnit.2.6.0.12054/lib/nunit.framework.dll"/>
@@ -79,10 +79,11 @@
 
 		<copy todir="build" flatten="true">
 			<fileset>
-				<include name="${folders.packages}/NHibernate.3.3.1.4000/lib/Net35/NHibernate.dll"/>
+				<include name="${folders.packages}/NHibernate.3.3.3.4001/lib/Net35/NHibernate.dll"/>
 				<include name="${folders.packages}/Iesi.Collections.3.3.1.4000/lib/Net35/Iesi.Collections.dll"/>
-				<include name="${folders.packages}/Lucene.Net.2.9.4.1/lib/net40/Lucene.Net.dll"/>
+				<include name="${folders.packages}/Lucene.Net.3.0.3/lib/net40/Lucene.Net.dll"/>
 				<include name="${folders.packages}/SharpZipLib.0.86.0/lib/20/ICSharpCode.SharpZipLib.dll"/>
+				<include name="${folders.packages}/Log4net.2.0.0/lib/net40-full/log4net.dll"/>
 			</fileset>
 		</copy>
 	</target>
