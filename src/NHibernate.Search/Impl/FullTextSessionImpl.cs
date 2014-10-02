@@ -296,16 +296,6 @@ namespace NHibernate.Search.Impl
             session.Persist(entityName, obj);
         }
 
-        public object SaveOrUpdateCopy(object obj)
-        {
-            return session.SaveOrUpdateCopy(obj);
-        }
-
-        public object SaveOrUpdateCopy(object obj, object id)
-        {
-            return session.SaveOrUpdateCopy(obj, id);
-        }
-
         public void Delete(object obj)
         {
             session.Delete(obj);
@@ -501,6 +491,21 @@ namespace NHibernate.Search.Impl
             return session.GetSession(entityMode);
         }
 
+        public void Save(string entityName, object obj, object id)
+        {
+            session.Save(entityName, obj, id);
+        }
+
+        public void SaveOrUpdate(string entityName, object obj, object id)
+        {
+            session.SaveOrUpdate(entityName, obj, id);
+        }
+
+        public void Update(string entityName, object obj, object id)
+        {
+            session.SaveOrUpdate(entityName, obj, id);
+        }
+
         #endregion
 
         #region IFullTextSession Members
@@ -611,5 +616,6 @@ namespace NHibernate.Search.Impl
         }
 
         #endregion
+        
     }
 }
